@@ -118,9 +118,8 @@
                     android:id="@+id/time_visit"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:hint="Restaurant type"
+                    android:hint="Date and time of the visit"
                     android:clickable="true"
-                    android:editable="false"
                     android:focusable="false"
                     android:padding="10dp"
                     android:background="@drawable/rounded_edittext"
@@ -142,7 +141,7 @@
                     android:id="@+id/price"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:hint="Restaurant type"
+                    android:hint="Average meal price per person"
                     android:padding="10dp"
                     android:background="@drawable/rounded_edittext"
                     android:inputType="text"/>
@@ -204,7 +203,6 @@
                     android:textSize="18sp"
                     android:textColor="@color/colorText"
                     android:layout_marginVertical="10dp"/>
-
                 <RatingBar
                     android:id="@+id/cleanliness_rating"
                     android:layout_width="wrap_content"
@@ -250,6 +248,4 @@
                 android:textColor="#fff"/>
         </LinearLayout>
     </ScrollView>
-
-
 </LinearLayout>

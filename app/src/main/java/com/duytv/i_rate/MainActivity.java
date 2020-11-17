@@ -6,21 +6,20 @@ import androidx.appcompat.widget.Toolbar;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.basgeekball.awesomevalidation.AwesomeValidation;
+import com.basgeekball.awesomevalidation.ValidationStyle;
+
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
@@ -39,11 +38,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private EditText edt_notes;
     private Button btn_addFeedback;
     private Toolbar toolbar;
+    private AwesomeValidation awesomeValidation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        awesomeValidation = new AwesomeValidation(ValidationStyle.BASIC);
 
         initViews();
     }
@@ -55,10 +56,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         initRatingBar();
 
         this.btn_addFeedback = findViewById(R.id.add_feedback);
-        btn_addFeedback.setOnClickListener(this);
+        this.btn_addFeedback.setOnClickListener(this);
 
         this.edt_time_visit = findViewById(R.id.time_visit);
-        edt_time_visit.setOnClickListener(this);
+        this.edt_time_visit.setOnClickListener(this);
 
         this.edt_reporter = findViewById(R.id.reporter);
         this.edt_restaurant_name = findViewById(R.id.restaurant_Name);
@@ -74,10 +75,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         this.cleanlinessRating = findViewById(R.id.cleanliness_rating);
         this.serviceRating = findViewById(R.id.service_rating);
     }
+
     DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
         @Override
-        public void onDateSet(DatePicker view, int year, int monthOfYear,
-                              int dayOfMonth) {
+        public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
             myCalendar.set(Calendar.YEAR, year);
             myCalendar.set(Calendar.MONTH, monthOfYear);
             myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
@@ -107,30 +108,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         String edt_time_visit = this.edt_time_visit.getText().toString();
         String edt_price = this.edt_price.getText().toString();
         String edt_notes = this.edt_notes.getText().toString();
+        boolean validation = validation();
         switch (v.getId()){
-
             case R.id.add_feedback:
-                if (edt_reporter.isEmpty() || edt_restaurant_name.isEmpty() || edt_restaurant_type.isEmpty() || edt_time_visit.isEmpty() || edt_price.isEmpty()){
+                if (edt_reporter.isEmpty() || edt_restaurant_name.isEmpty() || edt_restaurant_type.isEmpty() || edt_time_visit.isEmpty() || edt_price.isEmpty() || validation == false){
                     customDialog(edt_reporter, edt_restaurant_name, edt_restaurant_type, edt_time_visit, edt_price);
                 }else {
                     showFeedback(edt_reporter, edt_restaurant_name,edt_restaurant_type, edt_time_visit, edt_price,edt_notes, food_quality_rating, cleanliness_rating, service_rating);
                 }
                 break;
             case R.id.time_visit:
-                new DatePickerDialog(MainActivity.this, date, myCalendar
-                        .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+                new DatePickerDialog(MainActivity.this, date,
+                        myCalendar.get(Calendar.YEAR),
+                        myCalendar.get(Calendar.MONTH),
                         myCalendar.get(Calendar.DAY_OF_MONTH)).show();
                 break;
-
         }
-
     }
-
     private void customDialog(String edt_reporter, String edt_restaurant_name, String edt_restaurant_type, String edt_time_visit, String edt_price){
 
         final Dialog dialog = new Dialog(context);
         dialog.setContentView(R.layout.custom_dialog);
-
 
         TextView dialog_reporter = (TextView) dialog.findViewById(R.id.dialog_reporter);
         TextView dialog_restaurant_name = (TextView) dialog.findViewById(R.id.dialog_restaurant_name);
@@ -145,21 +143,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if(edt_price.isEmpty() ) dialog_price.setText("Price");
 
         Button dialogButton = (Button) dialog.findViewById(R.id.dialogButtonOK);
-        // if button is clicked, close the custom dialog
         dialogButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
             }
         });
-
         dialog.show();
     }
     private void showFeedback(String edt_reporter, String edt_restaurant_name, String edt_restaurant_type, String edt_time_visit, String edt_price,String edt_notes, int food_quality_rating, int cleanliness_rating, int service_rating){
 
         final Dialog feedback = new Dialog(context);
         feedback.setContentView(R.layout.your_feedback);
-
 
         TextView feedback_reporter = (TextView) feedback.findViewById(R.id.feedback_reporter);
         TextView feedback_restaurant_name = (TextView) feedback.findViewById(R.id.feedback_restaurant_name);
@@ -192,6 +187,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnfeedbackSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                clearData();
                 feedback.dismiss();
             }
         });
@@ -199,4 +195,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         feedback.show();
     }
 
+    private boolean validation(){
+        awesomeValidation.addValidation(this, R.id.reporter, "^[A-Za-z\\s]{1,}[\\.]{0,1}[A-Za-z\\s]{0,}$", R.string.reporter);
+        awesomeValidation.addValidation(this, R.id.restaurant_Name, "^[A-Za-z\\s]{1,}[\\.]{0,1}[A-Za-z\\s]{0,}$", R.string.restaurant_name);
+        awesomeValidation.addValidation(this, R.id.restaurant_type, "^[A-Za-z\\s]{1,}[\\.]{0,1}[A-Za-z\\s]{0,}$", R.string.restaurant_Type);
+        awesomeValidation.addValidation(this, R.id.price, "^[0-9]{1,}[\\.]{0,1}[0-9]{0,}$", R.string.price);
+        if (awesomeValidation.validate()) {
+            return true;
+        }else return false;
+    }
+    private void clearData(){
+        edt_time_visit.getText().clear();
+        edt_reporter.getText().clear();
+        edt_restaurant_name.getText().clear();
+        edt_restaurant_type.getText().clear();
+        edt_price.getText().clear();
+        edt_notes.getText().clear();
+    }
 }

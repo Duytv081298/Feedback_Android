@@ -33,4 +33,6 @@ dependencies {
     implementation 'com.android.support:appcompat-v7:+'
     implementation 'androidx.appcompat:appcompat:+'
 
+    implementation 'com.basgeekball:awesome-validation:4.2'
+
 }

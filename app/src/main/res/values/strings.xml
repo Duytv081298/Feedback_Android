@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">I-Rate</string>
+
+    <string name="reporter">Enter a valid Reporter</string>
+    <string name="restaurant_name">Enter a valid Restaurant name</string>
+    <string name="restaurant_Type">Enter a valid Restaurant type</string>
+    <string name="time_Visit">Enter a valid Date of the visit</string>
+    <string name="price">Enter average meal price per person</string>
+    <string name="quality_Rating">Food Quality Rating</string>
+    <string name="cleanliness_Rating">Cleanliness Rating</string>
+    <string name="service_Rating">Service Rating</string>
+
 </resources>
